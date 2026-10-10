@@ -1,24 +1,9 @@
-# Normaliza automáticamente los finales de línea en archivos de texto
-* text=auto eol=lf
-
-# Archivos que se ejecutan dentro del contenedor (Linux): siempre LF,
-# sin importar que se edite o clone desde Windows.
-*.sh text eol=lf
-*.sql text eol=lf
-*.py text eol=lf
-*.yml text eol=lf
-*.yaml text eol=lf
-Dockerfile text eol=lf
-.env.example text eol=lf
-
-# Documentación y configuración
-*.md text eol=lf
-.gitignore text eol=lf
-.gitattributes text eol=lf
-
-# Binarios: no se deben normalizar ni mostrar diff de texto
-*.png binary
-*.jpg binary
-*.jpeg binary
-*.pdf binary
-*.zip binary
+# Los scripts se ejecutan DENTRO del contenedor, que es Linux.
+# Sin esta regla, Git en Windows los guarda con finales de linea CRLF
+# y bash falla al ejecutarlos con un error confuso:
+#     bash: extras/comprobar.sh: cannot execute: required file not found
+# o bien   : command not found   con un renglon aparentemente vacio.
+*.sh        text eol=lf
+*.sql       text eol=lf
+compose.yaml text eol=lf
+Dockerfile  text eol=lf
