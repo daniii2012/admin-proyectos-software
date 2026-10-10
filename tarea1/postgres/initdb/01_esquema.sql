@@ -1,23 +1,44 @@
--- Esquema de prueba: proyectos y sus tareas
-CREATE TABLE proyecto (
-    id            SERIAL PRIMARY KEY,
-    nombre        VARCHAR(100) NOT NULL,
-    fecha_inicio  DATE NOT NULL DEFAULT CURRENT_DATE
+-- ---------------------------------------------------------------------------
+-- Esquema de prueba · UEA 1151055 · Administración de Proyectos de Software
+--
+-- Este archivo lo ejecuta la imagen de PostgreSQL UNA sola vez: la primera
+-- vez que arranca con el volumen vacío. Si ya hay datos, se ignora.
+--
+-- Para volver a ejecutarlo hay que borrar el volumen:
+--     docker compose down -v && docker compose up -d
+-- ---------------------------------------------------------------------------
+
+CREATE TABLE equipo (
+    id          smallserial PRIMARY KEY,
+    nombre      text        NOT NULL,
+    matricula   char(10)    NOT NULL UNIQUE,
+    rol         text        NOT NULL
 );
 
-CREATE TABLE tarea (
-    id           SERIAL PRIMARY KEY,
-    proyecto_id  INTEGER NOT NULL REFERENCES proyecto(id),
-    titulo       VARCHAR(150) NOT NULL,
-    estado       VARCHAR(20) NOT NULL DEFAULT 'pendiente'
+CREATE TABLE historia (
+    id          serial      PRIMARY KEY,
+    titulo      text        NOT NULL,
+    puntos      smallint    NOT NULL CHECK (puntos IN (1, 2, 3, 5, 8, 13)),
+    estado      text        NOT NULL DEFAULT 'pendiente'
+                            CHECK (estado IN ('pendiente', 'en curso', 'terminada')),
+    responsable smallint    REFERENCES equipo (id),
+    creada      timestamptz NOT NULL DEFAULT now()
 );
 
-INSERT INTO proyecto (nombre) VALUES
-    ('Tarea 1 - Administracion de Proyectos'),
-    ('Chatbot de prueba');
+INSERT INTO equipo (nombre, matricula, rol) VALUES
+    ('Integrante 1', '2212345678', 'Líder de proyecto'),
+    ('Integrante 2', '2212345679', 'Desarrollo'),
+    ('Integrante 3', '2212345680', 'Calidad');
 
-INSERT INTO tarea (proyecto_id, titulo, estado) VALUES
-    (1, 'Crear repositorio en GitHub', 'terminada'),
-    (1, 'Levantar PostgreSQL 17', 'terminada'),
-    (1, 'Actualizar a PostgreSQL 18', 'en curso'),
-    (2, 'Definir alcance', 'pendiente');
+INSERT INTO historia (titulo, puntos, estado, responsable) VALUES
+    ('Levantar el entorno con Docker Compose',        3, 'terminada', 1),
+    ('Configurar la protección de la rama principal', 2, 'en curso',  3),
+    ('Redactar el acta de constitución',              5, 'pendiente', 1);
+
+-- Comprobación visible en los logs del contenedor al arrancar.
+DO $$
+DECLARE n integer;
+BEGIN
+    SELECT count(*) INTO n FROM historia;
+    RAISE NOTICE 'Esquema de prueba creado: % historias cargadas.', n;
+END $$;

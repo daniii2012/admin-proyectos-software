@@ -59,11 +59,11 @@ services:
       - "127.0.0.1:${POSTGRES_PORT:-5434}:5432"
 
     volumes:
-      # PostgreSQL 18 cambió el punto de montaje.
+      # ⚠️ PostgreSQL 18 cambió el punto de montaje.
       #    17 y anteriores:  /var/lib/postgresql/data
       #    18 en adelante:   /var/lib/postgresql   (PGDATA=/var/lib/postgresql/18/docker)
       # Montar la ruta vieja con la imagen 18 hace que el contenedor
-      # NO arranque: sale con código 1 y el log dice «unused mount/volume».
+      # NO arranque: sale con código 1 y el log empieza con «Error: in 18+».
       - datos_db:/var/lib/postgresql
 
       # Scripts que se ejecutan UNA sola vez, cuando el volumen está vacío.
@@ -79,7 +79,7 @@ services:
 
     healthcheck:
       # $$ escapa el $ para que lo resuelva el shell del contenedor y no Compose.
-      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      test: ["CMD-SHELL", "pg_isready -h 127.0.0.1 -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
       interval: 10s
       timeout: 5s
       retries: 5
