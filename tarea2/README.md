@@ -27,7 +27,7 @@ Esta tarea tiene tres partes. En la primera dejé lista mi computadora y mi tel�
 6. [Seguridad](docs/06-seguridad.md)
 7. [Casos de uso](docs/07-casos-de-uso.md)
 
-La configuración de MCP está en [config](config/claude_desktop_config.json) y las capturas en [img](img/). Las diapositivas de la exposición están en [presentacion](presentacion/presentacion_mcp.pptx).
+La configuración de MCP está en [config](config/claude_desktop_config.json) y las capturas en [img](img/). Las diapositivas de la exposición están en [presentacion](presentacion/presentacion_mcp.pptx) (también en [PDF](presentacion/presentacion_mcp.pdf)), y el video de respaldo de la demostración, de menos de dos minutos, en [mcp_demo_respaldo.mp4](presentacion/mcp_demo_respaldo.mp4).
 
 ---
 
